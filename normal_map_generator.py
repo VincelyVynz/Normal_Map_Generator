@@ -61,7 +61,24 @@ def tiles_to_normal(tile):
     return normal_image
 
 
+for img_name, img_array in img_dict.items():
+    tiles = get_tiles(img_array, tile_size=100)
 
+    normal_tiles = []
+    for x,y, tile in tiles:
+        normal_tile = tiles_to_normal(tile)
+        normal_tiles.append((x,y,normal_tile))
+
+    height, width = img_array.shape
+    full_normal = np.zeros((height, width, 3), dtype=np.uint8)
+
+    for x,y,normal_tile in normal_tiles:
+        h,w, _ = normal_tile.shape
+        full_normal[y:y+h, x:x+w] = normal_tile
+
+    output_path = os.path.join(output_folder, img_name.split(".")[0] + "_normal.png")
+    Image.fromarray(full_normal).save(output_path)
+    print(f"Saved normal map for {img_name}")
 
 
 
